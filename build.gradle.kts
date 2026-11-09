@@ -22,3 +22,6 @@ reporting {
         }
     }
 }
+tasks.named("check"){
+    finalizedBy(tasks.named("javaCodeCoverageReport"))
+}

@@ -13,7 +13,9 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/setup-java@v6
         with:
-          java-version: 21
+          java-version: |
+            17
+            21
           distribution: "temurin"
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
@@ -27,3 +29,37 @@ jobs:
           report_paths: '**/build/test-results/*/TEST-*.xml'
           detailed_summary: true
           include_passed: true
+      # generates coverage-report.md and publishes as checkrun
+      - name: JaCoCo Code Coverage Report
+        id: jacoco_reporter
+        uses: PavanMudigonda/jacoco-reporter@v5.0
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        with:
+          coverage_results_path: build/reports/jacoco/javaCodeCoverageReport/javaCodeCoverageReport.xml
+          coverage_report_name: Coverage
+          coverage_report_title: JaCoCo
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_check_run: false
+          minimum_coverage: 38
+          fail_below_threshold: true
+          publish_only_summary: false
+
+      # Publish Coverage Job Summary  # Optional
+      - name: Add Jacocoo report to workflow run summary
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          echo "| Outcome | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Code Coverage % | ${{ steps.jacoco_reporter.outputs.coverage_percentage }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| :heavy_check_mark: Number of Lines Covered | ${{ steps.jacoco_reporter.outputs.covered_lines }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| :x: Number of Lines Missed | ${{ steps.jacoco_reporter.outputs.missed_lines }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Total Number of Lines | ${{ steps.jacoco_reporter.outputs.total_lines }} |" >> $GITHUB_STEP_SUMMARY
+
+      # uploads the coverage-report.md artifact  # Optional
+      - name: Upload Code Coverage Artifacts
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/upload-artifact@v5
+        with:
+          name: code-coverage-report-markdown
+          path: "*/coverage-results.md"
+          retention-days: 1
