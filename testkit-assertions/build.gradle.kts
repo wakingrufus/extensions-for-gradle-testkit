@@ -9,6 +9,13 @@ plugins {
 repositories {
     mavenCentral()
 }
+dependencies {
+    compileOnly(gradleTestKit())
+    api("org.jspecify:jspecify:1.0.0")
+    api("org.assertj:assertj-core:3.27.7")
+
+    testImplementation(gradleTestKit())
+}
 testing {
     suites {
         named<JvmTestSuite>("test") {
@@ -23,4 +30,9 @@ project.tasks.named<JacocoReport>("jacocoTestReport") {
 }
 project.tasks.named("test") {
     finalizedBy("jacocoTestReport")
+}
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
