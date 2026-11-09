@@ -1,6 +1,7 @@
 plugins {
     base
     id("jacoco-report-aggregation")
+    id("org.jreleaser") version ("1.26.0")
 }
 tasks.wrapper {
     distributionType = Wrapper.DistributionType.BIN
@@ -17,11 +18,64 @@ dependencies {
 }
 reporting {
     reports {
-        val javaCodeCoverageReport by creating(JacocoCoverageReport::class) {
+        register("javaCodeCoverageReport", JacocoCoverageReport::class.java) {
             testSuiteName = "test"
         }
     }
 }
 tasks.named("check"){
     finalizedBy(tasks.named("javaCodeCoverageReport"))
+}
+jreleaser {
+    signing {
+        armored = true
+        publicKey = System.getenv("PUBLIC_KEY")
+        secretKey = System.getenv("PRIVATE_KEY")
+        passphrase = System.getenv("PASSPHRASE")
+    }
+    release {
+        github {
+            repoOwner = "wakingrufus"
+            host = "github.com"
+            username = "wakingrufus"
+            apiEndpoint = "https://api.github.com"
+            token = System.getenv("GITHUB_TOKEN")
+            enabled = true
+            releaseName = "{{tagName}}"
+            releaseNotes {
+                enabled = true
+            }
+            changelog {
+                enabled = false
+            }
+            skipTag = true
+            sign = false
+        }
+    }
+    deploy {
+        maven {
+            mavenCentral {
+                create("sonatype") {
+                    url = "https://central.sonatype.com/api/v1/publisher"
+                    stagingRepository("build/staging-deploy")
+                    applyMavenCentralRules = true
+                    username = System.getenv("SONATYPE_USER")
+                    password = System.getenv("SONATYPE_PASS")
+                    namespace.set("io.github.wakingrufus")
+                    retryDelay = 60
+                    maxRetries = 100
+                    artifactOverride {
+                        artifactId = "khtmx-dsl-js"
+                        jar = false
+                        verifyPom = false
+                        sourceJar = false
+                        javadocJar = false
+                    }
+                }
+            }
+        }
+    }
+}
+project.tasks.named("jreleaserFullRelease") {
+    dependsOn(subprojects.map { it.tasks.named("publish") })
 }
