@@ -1,3 +1,5 @@
+import org.jreleaser.model.Active
+
 plugins {
     base
     id("jacoco-report-aggregation")
@@ -28,6 +30,7 @@ tasks.named("check"){
 }
 jreleaser {
     signing {
+        active = Active.ALWAYS
         armored = true
         publicKey = System.getenv("PUBLIC_KEY")
         secretKey = System.getenv("PRIVATE_KEY")
@@ -56,6 +59,7 @@ jreleaser {
         maven {
             mavenCentral {
                 create("sonatype") {
+                    active = Active.ALWAYS
                     url = "https://central.sonatype.com/api/v1/publisher"
                     stagingRepository("build/staging-deploy")
                     applyMavenCentralRules = true
@@ -64,13 +68,6 @@ jreleaser {
                     namespace.set("io.github.wakingrufus")
                     retryDelay = 60
                     maxRetries = 100
-                    artifactOverride {
-                        artifactId = "khtmx-dsl-js"
-                        jar = false
-                        verifyPom = false
-                        sourceJar = false
-                        javadocJar = false
-                    }
                 }
             }
         }
