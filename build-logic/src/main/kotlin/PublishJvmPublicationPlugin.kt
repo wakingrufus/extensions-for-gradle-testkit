@@ -26,7 +26,7 @@ class PublishJvmPublicationPlugin : Plugin<Project> {
 
                     pom {
                         name = project.name
-                        description = project.description
+                        description.set(project.provider { project.description })
                         url = "https://github.com/wakingrufus/extensions-for-gradle-testkit"
                         licenses {
                             license {
