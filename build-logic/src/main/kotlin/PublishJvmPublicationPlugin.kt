@@ -27,7 +27,7 @@ class PublishJvmPublicationPlugin : Plugin<Project> {
                     pom {
                         name = project.name
                         description = project.description
-                        url = "https://github.com/wakingrufus/khtmx"
+                        url = "https://github.com/wakingrufus/extensions-for-gradle-testkit"
                         licenses {
                             license {
                                 name = "Apache-2.0"
