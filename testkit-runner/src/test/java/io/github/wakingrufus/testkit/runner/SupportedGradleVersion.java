@@ -1,0 +1,14 @@
+package io.github.wakingrufus.testkit.runner;
+
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
+public enum SupportedGradleVersion {
+    MIN(Gradle.ofVersion("9.2.1")), CURRENT(Gradle.current());
+
+    public final Gradle version;
+
+    SupportedGradleVersion(Gradle version) {
+        this.version = version;
+    }
+}
