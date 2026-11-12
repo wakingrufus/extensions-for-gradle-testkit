@@ -1,5 +1,42 @@
 # Extensions for Gradle TestKit
 
+## testkit-project-builder
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.wakingrufus/testkit-project-builder?style=for-the-badge&color=01AF01)](https://repo1.maven.org/maven2/io/github/wakingrufus/testkit-project-builder/)
+
+The project builder assists with authoring the files of a Gradle project in a temporary directory. The result of the project builder is a TestProjectRunner, which will be covered in the next section.
+
+Example (Kotlin + JUnit Jupiter):
+```kotlin
+internal class KotlinDslTest {
+    @TempDir
+    lateinit var testProjectDir: File
+
+    fun `test single project build with sources`() {
+        val runner = testProject(testProjectDir) {
+            rootProject {
+                plugins {
+                    java()
+                }
+                src {
+                    main {
+                        java("Main.java") {
+                            // language=java
+                            """
+public class Main {
+    public static void main(String[] args) {
+    }
+}
+"""
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+The tests(https://github.com/wakingrufus/extensions-for-gradle-testkit/blob/main/testkit-project-builder/src/test/kotlin/io/github/wakingrufus/testkit/project/KotlinDslTest.kt) also provide some good examples of usage.
 
 ## testkit-runner
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.wakingrufus/testkit-runner?style=for-the-badge&color=01AF01)](https://repo1.maven.org/maven2/io/github/wakingrufus/testkit-runner/)

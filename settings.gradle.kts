@@ -11,4 +11,5 @@ gradle.beforeProject {
     group = "io.github.wakingrufus"
 }
 include("testkit-assertions")
+include("testkit-project-builder")
 include("testkit-runner")

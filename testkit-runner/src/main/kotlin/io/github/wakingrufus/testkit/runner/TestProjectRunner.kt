@@ -32,6 +32,18 @@ class TestProjectRunner(private val projectDir: File) {
         return runner.build()
     }
 
+    fun run(runner: GradleRunner, args: List<String>): BuildResult {
+        runner.withProjectDir(projectDir)
+        runner.withArguments(args)
+        return runner.build()
+    }
+
+    fun run(runner: GradleRunner, vararg args: String): BuildResult {
+        runner.withProjectDir(projectDir)
+        runner.withArguments(*args)
+        return runner.build()
+    }
+
     /**
      * runs given tasks, expecting a failed build
      *

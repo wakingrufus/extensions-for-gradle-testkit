@@ -20,7 +20,12 @@ class TestKitProjectPlugin : Plugin<Project> {
         project.extensions.findByType<TestingExtension>()?.apply {
             suites {
                 named<JvmTestSuite>("test") {
-                    useJUnitJupiter()
+                    useJUnitJupiter("6.0.0")
+                    targets.configureEach {
+                        testTask.configure {
+                            maxParallelForks = 2
+                        }
+                    }
                 }
             }
         }
