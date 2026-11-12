@@ -40,12 +40,12 @@ jobs:
           coverage_report_title: JaCoCo
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_check_run: false
-          minimum_coverage: 38
+          minimum_coverage: 80
           fail_below_threshold: true
           publish_only_summary: false
 
       # Publish Coverage Job Summary  # Optional
-      - name: Add Jacocoo report to workflow run summary
+      - name: Add Jacoco report to workflow run summary
         if: github.event.pull_request.head.repo.full_name == github.repository
         run: |
           echo "| Outcome | Value |" >> $GITHUB_STEP_SUMMARY
