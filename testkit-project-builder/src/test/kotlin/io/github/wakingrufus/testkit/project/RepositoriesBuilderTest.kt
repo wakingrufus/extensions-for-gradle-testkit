@@ -66,6 +66,20 @@ internal class RepositoriesBuilderTest {
     }
 
     @Test
+    fun test_plugin_portal_kotlin() {
+        val builder = RepositoriesBuilder()
+        builder.gradlePluginPortal()
+        val actual = builder.build(BuildscriptLanguage.KOTLIN, 0)
+        //language=groovy
+        assertThat(actual).isEqualTo(
+            """repositories {
+    gradlePluginPortal()
+}
+"""
+        )
+    }
+
+    @Test
     fun testKotlinMaven() {
         val builder = RepositoriesBuilder()
         builder.maven("url")
