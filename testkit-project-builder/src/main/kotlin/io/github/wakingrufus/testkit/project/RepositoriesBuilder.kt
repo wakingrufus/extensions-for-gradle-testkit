@@ -25,6 +25,13 @@ class RepositoriesBuilder {
     }
 
     /**
+     * The built-in gradlePluginPortal repository
+     */
+    fun gradlePluginPortal() {
+        repositories.add(BuiltIn("gradlePluginPortal()"))
+    }
+
+    /**
      * The built-in mavenLocal repository
      */
     fun mavenLocal() {
